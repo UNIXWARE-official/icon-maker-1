@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Icon Maker</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<style type="text/css">
+		svg {width: 20px; height:20px}
+		#output svg {width: 300px; height:300px;}
+	</style>
+</head>
+<body class="pt-5">
+<nav class="navbar navbar-dark bg-dark fixed-top">
+	<a class="navbar-brand" href="index.html">Icon Maker</a>
+	<ul class="navbar-nav">
+		<li class="nav-item">
+			<a class="nav-link" href="https://github.com/yagci/icon-maker">Github</a>
+		</li>
+	</ul>
+</nav>
+<div class="container mt-5">
+	<div class="row">
+		<div class="col text-center" id="output">output here</div>
+	</div>
+	<div class="row pt-5">
+		<div class="col">
+			<h4>Step 1. Pick an icon</h4>
+			<span id="input-icon"></span>
+		</div>
+		<div class="col">
+			<h4>Step 2. Adjust settings</h4>
+			<form id="settings">
+				<div class="form-group">
+					<label for="b-radius">Border Radius</label>
+					<input type="range" class="form-control-range" id="b-radius" min="0" max="50" step="10" value="10">
+				</div>
+				<div class="form-group">
+					<label for="i-padding">Icon Padding</label>
+					<input type="range" class="form-control-range" id="i-padding" min="10" max="100" step="10" value="50">
+				</div>
+				<div class="form-group">
+					<label for="i-color">Icon Color</label>
+					<input type="color" class="form-control-range" id="i-color" value="#eee">
+				</div>
+				<div class="form-group">
+					<label for="bg-color">Background Color</label>
+					<input type="color" class="form-control-range" id="bg-color" value="#000">
+				</div>
+			</form>
+
+
+			<h4 class="pt-5">Step 3. Download Icon</h4>
+			<button class="btn btn-dark btn-block" onclick="save_svg()">Save Icon as PNG</button>
+			<div id="download_png"></div>
+		</div>
+	</div>
+</div>
+<script src="js/jquery-3.5.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+	//$.getJSON("json/font-awesome-icons.json", function(data) {
+	//	const svgList = {};
+	//	$.each(data, function(key, val) {
+	//		$.each(val["free"], function(k, v) {
+	//			svgList[key + " (" + v + ")"] = val["svg"][v]["raw"];
+	//		});
+	//	});
+	//});
+
+	const form = document.querySelector('form');
+	const items = [];
+	let svg = {};
+
+	function apply_settings() {
+		let radius = form[0]['value'];
+		let padding = form[1]['value'];
+		let i_color = form[2]['value'];
+		let bg_color = form[3]['value'];
+		document.getElementsByTagName('svg')[0].style.borderRadius = radius + "%";
+		document.getElementsByTagName('svg')[0].style.padding = padding + "px";
+		document.getElementsByTagName('svg')[0].style.fill = i_color;
+		document.getElementsByTagName('svg')[0].style.backgroundColor = bg_color;
+	}
+
+	function select_icon(key) {
+		document.getElementById('output').innerHTML = svg[key];
+		apply_settings();
+	}
+
+	$.getJSON("json/svgs.json", function(data) {
+		svg = data;
+		select_icon('apple (brands)');
+		$.each(data, function(key, val) {
+			items.push("<button type=\"button\" class=\"mt-2 mr-2 btn btn-light\" onclick=\"select_icon('" + key + "')\">" + val + " " + key + "</button>");
+		});
+		document.getElementById('input-icon').innerHTML = items.join("");
+	});
+
+	function save_svg() {
+		let svg = document.getElementsByTagName('svg')[0];
+		console.log(svg);
+		alert('should download image');
+	}
+
+	$(document).ready(function() {
+		form.addEventListener('change', apply_settings);
+	});
+</script>
+</body>
+</html>
